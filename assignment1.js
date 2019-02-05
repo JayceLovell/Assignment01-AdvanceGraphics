@@ -14,7 +14,9 @@ const clock = new THREE.Clock();
 const axesHelper = new THREE.AxesHelper(10);
 
 //global variables
-var trackballControls;
+var trackballControls,
+    buldLight,
+    hemiLight;
 
 //function definitions
 function init() {
@@ -32,16 +34,23 @@ function setupCameraAndLight() {
     camera.position.z = 30;
     camera.lookAt(scene.position);
 
-    let ambient = new THREE.AmbientLight(0xFFFFFF);
-    scene.add(ambient);
+    //https://threejs.org/docs/#examples/objects/Lensflare
+    var light = new THREE.PointLight(0xCCCC00, 100,100,100);
+    light.position.set(0,0,0);
+    scene.add(light);
+    //Color,intensity,distance,decay
 }
 function CreateSun() {
-    let sphereGeometry = new THREE.SphereGeometry(20, 32, 50);
-    let sphereMaterial = new THREE.MeshLambertMaterial({ color: 0xCCCC00 });
-    let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    let sunGeometry = new THREE.SphereGeometry(20, 32, 50);
+    let sunMaterial = new THREE.MeshLambertMaterial({ color: 0xCCCC00 });
+    let sun = new THREE.Mesh(sunGeometry, sunMaterial);
+    
+    sun.castShadow=false;
 
-
-    scene.add(sphere);
+    scene.add(sun);
+}
+function CreateMercury(){
+    
 }
 function addaxesHelper() {
 
