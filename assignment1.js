@@ -34,22 +34,32 @@ function setupCameraAndLight() {
     camera.position.z = 30;
     camera.lookAt(scene.position);
 
-    //https://threejs.org/docs/#examples/objects/Lensflare
-    var light = new THREE.PointLight(0xCCCC00, 100,100,100);
-    light.position.set(0,0,0);
+    /*var light = new THREE.PointLight(0xCCCC00, 1, 100);
+    //light.position.set(0,0,0);
+    var sphere = new THREE.SphereBufferGeometry( 0.5, 16, 8 );
+    light.add(new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
     scene.add(light);
-    //Color,intensity,distance,decay
+    //Color,intensity,distance,decay*/
 }
 function CreateSun() {
-    let sunGeometry = new THREE.SphereGeometry(20, 32, 50);
+    var light = new THREE.PointLight(0xCCCC00, 1, 100);
+    //let sunGeometry = new THREE.SphereBufferGeometry(0.5, 16, 8);
+    let sunGeometry = new THREE.SphereBufferGeometry(20, 32, 50);
     let sunMaterial = new THREE.MeshLambertMaterial({ color: 0xCCCC00 });
-    let sun = new THREE.Mesh(sunGeometry, sunMaterial);
+    light.add(new THREE.Mesh( sunGeometry, new THREE.MeshBasicMaterial( { color: 0xCCCC00 } )));
     
-    sun.castShadow=false;
-
-    scene.add(sun);
+    //sun.castShadow=false;
+    scene.add(light);
+    //scene.add(sun);
 }
 function CreateMercury(){
+    let mercuryGeometry = new THREE.SphereGeometry(5,32,50);
+    let mercuryMaterial = new THREE.MeshLambertMaterial({color: 0xA9A9A9});
+    let mercury = new THREE.Mesh(mercuryGeometry,mercuryMaterial);
+
+    mercury.position.set.x=-50;
+
+    scene.add(mercury);
     
 }
 function addaxesHelper() {
@@ -69,7 +79,8 @@ window.onload = () => {
 
     init();
     setupCameraAndLight();
-    render();
     addaxesHelper();
     CreateSun();
+    //CreateMercury();
+    render();
 }
