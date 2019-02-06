@@ -162,9 +162,9 @@ function render() {
     trackballControls.update(clock.getDelta());
     renderer.render(scene, camera);
 
-    var time = Date.now() * 0.0005;
+    /*var time = Date.now() * 0.0005;
 
-    /*sun.position.x = Math.cos( time * 10 ) * 5;
+    sun.position.x = Math.cos( time * 10 ) * 5;
 	sun.position.y = Math.cos( time * 7 ) * 3;
 	sun.position.y = Math.cos( time * 7 ) * 3;
     /*planets.foreach(function(planet){
