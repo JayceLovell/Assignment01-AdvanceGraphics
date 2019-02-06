@@ -19,6 +19,15 @@ var trackballControls,
     hemiLight,
     sun,
     planets = [],
+    mercurySpeed=0.00,
+    venusSpeed=0.00,
+    earthSpeed=0.00,
+    marsSpeed=0.00,
+    jupiterSpeed=0.00,
+    saturnSpeed=0.00,
+    uranusSpeed=0.00,
+    neptuneSpeed=0.00,
+    plutoSpeed=0.00,
     mercuryOrbit = new THREE.Object3D(),
     venusOrbit = new THREE.Object3D(),
     earthOrbit = new THREE.Object3D(),
@@ -35,6 +44,46 @@ function init() {
     renderer.setClearColor(0x000000);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+    //setup the dat-gui widget
+    control = new function () {
+        this.MercurySpeed=0;
+        this.VenusSpeed=0;
+        this.EarthSpeed=0;
+        this.MarsSpeed=0;
+        this.JupterSpeed=0;
+        this.SaturnSpeed=0;
+        this.UranusSpeed=0;
+        this.NeptuneSpeed=0;
+        this.PlutoSpeed=0;
+    }
+    gui = new dat.GUI();
+    gui.add(control,"MercurySpeed",0.00,100.00,87.97).onChange((value)=>{
+        mercurySpeed=parseFloat(value);
+    });
+    gui.add(control,"VenusSpeed",0.00,1.00,0.002247).onChange((value)=>{
+        venusSpeed=value;
+    });
+    gui.add(control,"EarthSpeed",0.00,1.00,0.00036526).onChange((value)=>{
+        earthSpeed=value;
+    });
+    gui.add(control,"MarsSpeed",0.00,1.00,0.000068698).onChange((value)=>{
+        marsSpeed=value;
+    });
+    gui.add(control,"JupterSpeed",0.00,1.00,0.00000433282).onChange((value)=>{
+        jupiterSpeed=value;
+    });
+    gui.add(control,"UranusSpeed",0.00,1.00,0.0000000003068715).onChange((value)=>{
+        uranusSpeed=value;
+    });
+    gui.add(control,"SaturnSpeed",0.00,1.00,0.00000001075570).onChange((value)=>{
+        saturnSpeed=value;
+    });
+    gui.add(control,"NeptuneSpeed",0.00,1.00,0.000000000006019003).onChange((value)=>{
+        neptuneSpeed=value;
+    });
+    gui.add(control,"PlutoSpeed",0.00,1.00,0.000000000000090500).onChange((value)=>{
+        plutoSpeed=value;
+    });
 
 
     trackballControls = new THREE.TrackballControls(camera, renderer.domElement)
@@ -170,15 +219,15 @@ function render() {
     /*planets.foreach(function(planet){
       planet.rotation.y += 0.01;  
     })*/
-    mercuryOrbit.rotation.y += 87.97;
-    venusOrbit.rotation.y += 0.002247;
-    earthOrbit.rotation.y += 0.00036526;
-    marsOrbit.rotation.y += 0.000068698;
-    jupiterOrbit.rotation.y += 0.00000433282;
-    saturnOrbit.rotation.y += 0.00000001075570;
-    uranusOrbit.rotation.y += 0.0000000003068715;
-    neptuneOrbit.rotation.y += 0.000000000006019003;
-    plutoOrbit.rotation.y += 0.000000000000090500;
+    mercuryOrbit.rotation.y += mercurySpeed;
+    venusOrbit.rotation.y += venusSpeed;
+    earthOrbit.rotation.y += earthSpeed;
+    marsOrbit.rotation.y += marsSpeed;
+    jupiterOrbit.rotation.y += jupiterSpeed;
+    saturnOrbit.rotation.y += saturnSpeed;
+    uranusOrbit.rotation.y += uranusSpeed;
+    neptuneOrbit.rotation.y += neptuneSpeed;
+    plutoOrbit.rotation.y += plutoSpeed;
 
 
 
