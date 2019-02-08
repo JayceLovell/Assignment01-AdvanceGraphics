@@ -285,7 +285,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
                 window["orbit"+i].rotation.y -= i;
                 window["orbit"+i].rotation.z -= i;
                 window["orbit"+i].add(window["moon"+i]);
-                jupiterMoonsOrbits.add(window["moon"+i]);
+                jupiterMoonsOrbits.add(window["orbit"+i]);
                 planet.add(jupiterMoonsOrbits);
             }
             break;
