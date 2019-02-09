@@ -7,7 +7,7 @@
 
 //recurrent const
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100000);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100000000000);
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
 const axesHelper = new THREE.AxesHelper(10);
@@ -22,15 +22,17 @@ var controls,
     marsMoonSpeed=0.001,
     jupiterMoonSpeed=0.01,
     saturnMoonSpeed=0.01,
-    mercurySpeed=0.00,
-    venusSpeed=0.00,
-    earthSpeed=0.00,
-    marsSpeed=0.00,
-    jupiterSpeed=0.00,
-    saturnSpeed=0.00,
-    uranusSpeed=0.00,
-    neptuneSpeed=0.00,
-    plutoSpeed=0.00,
+    uranusMoonSpeed=0.01,
+    neptuneMoonSpeed=0.01,
+    mercurySpeed=87.97,
+    venusSpeed=0.002247,
+    earthSpeed=0.00036526,
+    marsSpeed=0.00068698,
+    jupiterSpeed=0.000433282,
+    saturnSpeed=0.000001075570,
+    uranusSpeed=0.0003068715,
+    neptuneSpeed=0.00006019003,
+    plutoSpeed=0.00000090500,
     mercuryOrbit = new THREE.Object3D(),
     venusOrbit = new THREE.Object3D(),
     earthOrbit = new THREE.Object3D(),
@@ -44,7 +46,10 @@ var controls,
     marsMoonOrbit1 = new THREE.Object3D(),
     marsMoonOrbit2 = new THREE.Object3D(),
     jupiterMoonsOrbits = new THREE.Group(),
-    saturnMoonsOrbits = [];
+    saturnMoonsOrbits = new THREE.Group(),
+    uranusMoonsOrbit = new THREE.Group(),
+    neptuneMoonsOrbit = new THREE.Group(),
+    angel='y';
 
 //function definitions
 function init() {
@@ -54,26 +59,30 @@ function init() {
     document.body.appendChild(renderer.domElement);
     //setup the dat-gui widget
     control = new function () {
-        this.MercurySpeed=0;
-        this.VenusSpeed=0;
-        this.EarthSpeed=0;
-        this.MarsSpeed=0;
-        this.JupterSpeed=0;
-        this.SaturnSpeed=0;
-        this.UranusSpeed=0;
-        this.NeptuneSpeed=0;
-        this.PlutoSpeed=0;
-        this.EarthMoonSpeed=0.001;
-        this.MarsMoonSpeed=0.001;
+        this.MercurySpeed=87.97;
+        this.VenusSpeed=0.002247;
+        this.EarthSpeed=0.00036526;
+        this.MarsSpeed=0.00068698;
+        this.JupiterSpeed=0.000433282;
+        this.SaturnSpeed=0.00001075570;
+        this.UranusSpeed=0.0003068715;
+        this.NeptuneSpeed=0.00006019003;
+        this.PlutoSpeed=0.00000090500;
+        this.EarthMoonSpeed=0.01;
+        this.MarsMoonSpeed=0.01;
         this.JupiterMoonSpeed=0.01;
         this.SaturnMoonSpeed=0.01;
+        this.UranusMoonSpeed=0.01;
+        this.NeptuneMoonSpeed=0.01;
     }
     gui = new dat.GUI();
     let planets = gui.addFolder('Planets');
     let earthMoon = gui.addFolder('EarthMoon');
-    let marsMoon = gui.addFolder('MarsMoon');
-    let jupiterMoon = gui.addFolder('JupiterMoon');
-    let saturnMoon = gui.addFolder('SaturnMoon');
+    let marsMoon = gui.addFolder('MarsMoons');
+    let jupiterMoon = gui.addFolder('JupiterMoons');
+    let saturnMoon = gui.addFolder('SaturnMoons');
+    let uranusMoon = gui.addFolder('UranusMoons');
+    let neptuneMoon = gui.addFolder('NeptuneMoons')
     planets.add(control,"MercurySpeed",0.00,100.00,87.97).onChange((value)=>{
         mercurySpeed=parseFloat(value);
     });
@@ -86,7 +95,7 @@ function init() {
     planets.add(control,"MarsSpeed",0.00,0.005,0.000068698).onChange((value)=>{
         marsSpeed=value;
     });
-    planets.add(control,"JupterSpeed",0.00,0.005,0.00000433282).onChange((value)=>{
+    planets.add(control,"JupiterSpeed",0.00,0.005,0.00000433282).onChange((value)=>{
         jupiterSpeed=value;
     });
     planets.add(control,"SaturnSpeed",0.00,0.005,0.00000001075570).onChange((value)=>{
@@ -101,10 +110,10 @@ function init() {
     planets.add(control,"PlutoSpeed",0.00,0.005,0.000000000000090500).onChange((value)=>{
         plutoSpeed=value;
     });
-    earthMoon.add(control,"EarthMoonSpeed",0.00,0.01,0.001).onChange((value)=>{
+    earthMoon.add(control,"EarthMoonSpeed",0.00,0.1,0.001).onChange((value)=>{
         earthMoonSpeed=value;
     });
-    marsMoon.add(control,"MarsMoonSpeed",0.00,0.01,0.001).onChange((value)=>{
+    marsMoon.add(control,"MarsMoonSpeed",0.00,0.1,0.001).onChange((value)=>{
         marsMoonSpeed=value;
     });
     jupiterMoon.add(control,"JupiterMoonSpeed",0.00,0.1,0.01).onChange((value)=>{
@@ -113,14 +122,20 @@ function init() {
     saturnMoon.add(control,"SaturnMoonSpeed",0.00,0.1,0.01).onChange((value)=>{
         saturnMoonSpeed=value;
     });
+    uranusMoon.add(control,"UranusMoonSpeed",0.00,0.1,0.01).onChange((value)=>{
+        uranusMoonSpeed=value;
+    });
+    neptuneMoon.add(control,"NeptuneMoonSpeed",0.00,0.1,0.01).onChange((value)=>{
+        neptuneMoonSpeed=value;
+    });
 
     controls = new THREE.OrbitControls(camera,renderer.domElement);
 }
 
 function setupCamera() {
-    camera.position.x = 0;
-    camera.position.y = 100000;
-    camera.position.z = 100;
+    camera.position.x = 15;
+    camera.position.y = 1000000;
+    camera.position.z = 90;
     camera.lookAt(scene.position);
     /*var topSpotLight = new THREE.SpotLight( 0xffffff );
     var bottomSpotLight = new THREE.SpotLight( 0xffffff );
@@ -131,15 +146,14 @@ function setupCamera() {
 
     scene.add(topSpotLight);
     scene.add(bottomSpotLight);*/
-    let light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-    scene.add( light );
+    //let light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+   // scene.add( light );
 }
 function createSun() {
     sun = new THREE.PointLight(0xFFFFFF, 2, 0,2);
     let sunGeometry = new THREE.SphereBufferGeometry(10000, 32, 50);
     let sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFDA50F });
     sun.add(new THREE.Mesh( sunGeometry, sunMaterial));
-    
     scene.add(sun);
     sun.add(mercuryOrbit);
     sun.add(venusOrbit);
@@ -160,6 +174,7 @@ function createMercury(){
     mercury.position.x=(sun.position.x + 57910);
     scene.add(mercury); 
     mercuryOrbit.add(mercury);
+    mercuryOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createVenus(){
     let venusGeometry = new THREE.SphereGeometry(880,32,50);
@@ -171,10 +186,11 @@ function createVenus(){
     venus.position.x =(sun.position.x + 108200);
     scene.add(venus);
     venusOrbit.add(venus);
+    venusOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createEarth(){
     let geometry = new THREE.SphereGeometry(920,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0x008080});
+    let material = new THREE.MeshPhysicalMaterial({color: 0x008080},{flatShading: true});
     earth = new THREE.Mesh(geometry,material);
 
     earth.position.x=(sun.position.x + 149600);
@@ -182,10 +198,11 @@ function createEarth(){
     earthOrbit.add(earth);
     createMoons("Earth",earth,1,earthMoonOrbit);
     createRing((sun.position.x+149600));
+    earthOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createMars(){
     let geometry = new THREE.SphereGeometry(500,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0xb7410e});
+    let material = new THREE.MeshPhysicalMaterial({color: 0xb7410e},{flatShading: true});
     let mars = new THREE.Mesh(geometry,material);
     
     mars.position.x=(sun.position.x + 227900);
@@ -193,10 +210,11 @@ function createMars(){
     marsOrbit.add(mars)
     createMoons("Mars",mars,2);
     createRing((sun.position.x+227900));
+    marsOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createJupiter(){
     let geometry = new THREE.SphereGeometry(10360,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0xA52A2A});
+    let material = new THREE.MeshPhysicalMaterial({color: 0xA52A2A},{flatShading: true});
     let jupiter = new THREE.Mesh(geometry,material);
     
     jupiter.position.x=(sun.position.x + 300000);
@@ -204,48 +222,53 @@ function createJupiter(){
     jupiterOrbit.add(jupiter);
     createMoons("Jupiter",jupiter,79,0);
     createRing((sun.position.x+300000));
+    jupiterOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createSaturn(){
     let geometry = new THREE.SphereGeometry(8710,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0xfde522});
+    let material = new THREE.MeshPhysicalMaterial({color: 0xfde522},{flatShading: true});
     let saturn = new THREE.Mesh(geometry,material);
     
     saturn.position.x=(sun.position.x + 400000);
     scene.add(saturn);
     saturnOrbit.add(saturn);
-    //createMoons("Saturn",saturn,53);
+    createMoons("Saturn",saturn,53,0);
     createRing((sun.position.x + 400000));
+    saturnOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createUranus(){
     let geometry = new THREE.SphereGeometry(3710,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0xd1e7e7});
+    let material = new THREE.MeshPhysicalMaterial({color: 0xd1e7e7},{flatShading: true});
     let uranus = new THREE.Mesh(geometry,material);
     
     uranus.position.x=(sun.position.x + 500000);
     scene.add(uranus);
     uranusOrbit.add(uranus);
-    createMoons("Uranus",uranus,27);
+    createMoons("Uranus",uranus,27,0);
     createRing((sun.position.x + 500000));
+    uranusOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createNeptune(){
     let geometry = new THREE.SphereGeometry(3600,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0x44667f});
+    let material = new THREE.MeshPhysicalMaterial({color: 0x44667f},{flatShading: true});
     let neptune = new THREE.Mesh(geometry,material);
     
     neptune.position.x=(sun.position.x + 600000);
     scene.add(neptune);
     neptuneOrbit.add(neptune);
-    createMoons("Neptune",neptune,13);
+    createMoons("Neptune",neptune,13,0);
     createRing((sun.position.x + 600000));
+    neptuneOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function createPluto(){
     let geometry = new THREE.SphereGeometry(1600,32,50);
-    let material = new THREE.MeshLambertMaterial({color: 0xF4A460});
+    let material = new THREE.MeshPhysicalMaterial({color: 0xF4A460},{flatShading: true});
     let pluto = new THREE.Mesh(geometry,material);
     pluto.position.x=(sun.position.x + 700000);
     scene.add(pluto);
     plutoOrbit.add(pluto);
     createRing((sun.position.x + 700000));
+    plutoOrbit.rotation.z=Math.floor((Math.random() * 10) + 1);
 }
 function addaxesHelper() {
 
@@ -273,17 +296,18 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
                     marsMoonOrbit2.add(moon);
                     break;
                 }
+                break;
             }
             case "Jupiter":
             {
-                let geometry = new THREE.SphereGeometry(1500,32,50);
+                let geometry = new THREE.SphereGeometry((Math.random()*(1000-150)+150),32,50);
                 let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
                 window["moon"+i] = new THREE.Mesh(geometry,material);
                 console.log("Creating moon: "+i);
                 window["moon"+i].position.x = 15000;
                 window["orbit"+i] = new THREE.Object3D();
-                window["orbit"+i].rotation.y -= i;
-                window["orbit"+i].rotation.z -= i;
+                window["orbit"+i].rotation.y -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].rotation.z -= Math.floor((Math.random() * numberOfMoons) + i);
                 window["orbit"+i].add(window["moon"+i]);
                 jupiterMoonsOrbits.add(window["orbit"+i]);
                 planet.add(jupiterMoonsOrbits);
@@ -291,20 +315,47 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
             break;
             case "Saturn":
             {
-                let orbit = new THREE.Object3D();
-                orbit.add(moon);
-                planet.add(orbit);
-                saturnMoonsOrbits.add(orbit);
+                let geometry = new THREE.SphereGeometry((Math.random()*(200-150)+150),32,50);
+                let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
+                window["moon"+i] = new THREE.Mesh(geometry,material);
+                console.log("Creating moon: "+i+" for "+name);
+                window["moon"+i].position.x = 15000;
+                window["orbit"+i] = new THREE.Object3D();
+                window["orbit"+i].rotation.y -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].rotation.z -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].add(window["moon"+i]);
+                planet.add(saturnMoonsOrbits);
+                saturnMoonsOrbits.add(window["orbit"+i]);
             }
             break;
             case "Uranus":
             {
-
+                let geometry = new THREE.SphereGeometry((Math.random()*(200-150)+150),32,50);
+                let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
+                window["moon"+i] = new THREE.Mesh(geometry,material);
+                console.log("Creating moon: "+i+" for "+name);
+                window["moon"+i].position.x = 9000;
+                window["orbit"+i] = new THREE.Object3D();
+                window["orbit"+i].rotation.y -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].rotation.z -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].add(window["moon"+i]);
+                planet.add(uranusMoonsOrbit);
+                uranusMoonsOrbit.add(window["orbit"+i]);
             }
             break;
             case "Neptune":
             {
-
+                let geometry = new THREE.SphereGeometry(150,32,50);
+                let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
+                window["moon"+i] = new THREE.Mesh(geometry,material);
+                console.log("Creating moon: "+i+" for "+name);
+                window["moon"+i].position.x = 9000;
+                window["orbit"+i] = new THREE.Object3D();
+                window["orbit"+i].rotation.y -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].rotation.z -= Math.floor((Math.random() * numberOfMoons) + i);
+                window["orbit"+i].add(window["moon"+i]);
+                planet.add(neptuneMoonsOrbit);
+                neptuneMoonsOrbit.add(window["orbit"+i]);
             }
             break;
             default:
@@ -322,10 +373,38 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
     }
 }
 function createRing(distance){
-    var geometry = new THREE.RingGeometry(distance,(distance+10), 100);
+    var geometry = new THREE.RingGeometry(distance,(distance+50), 100);
     var material = new THREE.MeshBasicMaterial( { color: 0xA9A9A9, side: THREE.DoubleSide } );
     var mesh = new THREE.Mesh( geometry, material );
     scene.add(mesh);
+}
+function rotateMoons(){
+    switch (angel){
+        case "y":
+        {
+        earthMoonOrbit.rotation.y +=earthMoonSpeed;
+        marsMoonOrbit1.rotation.y += marsMoonSpeed;
+        marsMoonOrbit2.rotation.y += marsMoonSpeed;
+        jupiterMoonsOrbits.rotation.y += jupiterMoonSpeed;
+        saturnMoonsOrbits.rotation.y += saturnMoonSpeed;
+        neptuneMoonsOrbit.rotation.y += neptuneMoonSpeed;
+        uranusMoonsOrbit.rotation.y += uranusMoonSpeed;
+        angel="z";
+        break;
+        }
+        case "z":
+        {
+        earthMoonOrbit.rotation.z +=earthMoonSpeed;
+        marsMoonOrbit1.rotation.z += marsMoonSpeed;
+        marsMoonOrbit2.rotation.z += marsMoonSpeed;
+        jupiterMoonsOrbits.rotation.z += jupiterMoonSpeed;
+        saturnMoonsOrbits.rotation.z += saturnMoonSpeed;
+        neptuneMoonsOrbit.rotation.z += neptuneMoonSpeed;
+        uranusMoonsOrbit.rotation.z += uranusMoonSpeed;
+        angel="y";
+        break;
+        }
+    }
 }
 function render() {
     //update the controlls
@@ -337,8 +416,7 @@ function render() {
 
     sun.position.x = Math.cos( time * 10 ) * 5;
 	sun.position.y = Math.cos( time * 7 ) * 3;
-	sun.position.y = Math.cos( time * 7 ) * 3;
-   
+    sun.position.y = Math.cos( time * 7 ) * 3;
     mercuryOrbit.rotation.z += mercurySpeed;
     venusOrbit.rotation.z += venusSpeed;
     earthOrbit.rotation.z += earthSpeed;
@@ -348,12 +426,8 @@ function render() {
     uranusOrbit.rotation.z += uranusSpeed;
     neptuneOrbit.rotation.z += neptuneSpeed;
     plutoOrbit.rotation.z += plutoSpeed;
-    earthMoonOrbit.rotation.z +=earthMoonSpeed;
-    marsMoonOrbit1.rotation.z += marsMoonSpeed;
-    marsMoonOrbit2.rotation.z += marsMoonSpeed;
-    jupiterMoonsOrbits.rotation.z += jupiterMoonSpeed;
 
-
+    rotateMoons();
 
 
     //to call itself
