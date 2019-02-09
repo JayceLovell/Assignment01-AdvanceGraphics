@@ -49,7 +49,8 @@ var controls,
     saturnMoonsOrbits = new THREE.Group(),
     uranusMoonsOrbit = new THREE.Group(),
     neptuneMoonsOrbit = new THREE.Group(),
-    angel='y';
+    angel='y',
+    light;
 
 //function definitions
 function init() {
@@ -74,6 +75,7 @@ function init() {
         this.SaturnMoonSpeed=0.01;
         this.UranusMoonSpeed=0.01;
         this.NeptuneMoonSpeed=0.01;
+        this.TurnOnAmbientLight=true;
     }
     gui = new dat.GUI();
     let planets = gui.addFolder('Planets');
@@ -128,10 +130,11 @@ function init() {
     neptuneMoon.add(control,"NeptuneMoonSpeed",0.00,0.1,0.01).onChange((value)=>{
         neptuneMoonSpeed=value;
     });
-
+    gui.add(control,"TurnOnAmbientLight").onChange((value)=>{
+            light.visible=value;
+    });
     controls = new THREE.OrbitControls(camera,renderer.domElement);
 }
-
 function setupCamera() {
     camera.position.x = 15;
     camera.position.y = 1000000;
@@ -146,8 +149,8 @@ function setupCamera() {
 
     scene.add(topSpotLight);
     scene.add(bottomSpotLight);*/
-    //let light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-   // scene.add( light );
+    light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    scene.add( light );
 }
 function createSun() {
     sun = new THREE.PointLight(0xFFFFFF, 2, 0,2);
@@ -300,10 +303,10 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
             }
             case "Jupiter":
             {
+                console.log("Creating moon: "+i+" for "+name);
                 let geometry = new THREE.SphereGeometry((Math.random()*(1000-150)+150),32,50);
                 let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
                 window["moon"+i] = new THREE.Mesh(geometry,material);
-                console.log("Creating moon: "+i);
                 window["moon"+i].position.x = 15000;
                 window["orbit"+i] = new THREE.Object3D();
                 window["orbit"+i].rotation.y -= Math.floor((Math.random() * numberOfMoons) + i);
@@ -368,8 +371,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
                 planetOrbit.add(moon);
             }
             break;
-        }
-        
+        }   
     }
 }
 function createRing(distance){
