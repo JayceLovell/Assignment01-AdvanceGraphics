@@ -29,7 +29,7 @@ var controls,
     earthSpeed=0.00036526,
     marsSpeed=0.00068698,
     jupiterSpeed=0.000433282,
-    saturnSpeed=0.000001075570,
+    saturnSpeed=0.00001075570,
     uranusSpeed=0.0003068715,
     neptuneSpeed=0.00006019003,
     plutoSpeed=0.00000090500,
@@ -65,7 +65,7 @@ function init() {
         this.EarthSpeed=0.00036526;
         this.MarsSpeed=0.00068698;
         this.JupiterSpeed=0.000433282;
-        this.SaturnSpeed=0.00001075570;
+        this.SaturnSpeed=0.0001075570;
         this.UranusSpeed=0.0003068715;
         this.NeptuneSpeed=0.00006019003;
         this.PlutoSpeed=0.00000090500;
@@ -318,7 +318,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
             break;
             case "Saturn":
             {
-                let geometry = new THREE.SphereGeometry((Math.random()*(200-150)+150),32,50);
+                let geometry = new THREE.SphereGeometry((Math.random()*(800-150)+150),32,50);
                 let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
                 window["moon"+i] = new THREE.Mesh(geometry,material);
                 console.log("Creating moon: "+i+" for "+name);
@@ -333,7 +333,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
             break;
             case "Uranus":
             {
-                let geometry = new THREE.SphereGeometry((Math.random()*(200-150)+150),32,50);
+                let geometry = new THREE.SphereGeometry((Math.random()*(700-150)+150),32,50);
                 let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
                 window["moon"+i] = new THREE.Mesh(geometry,material);
                 console.log("Creating moon: "+i+" for "+name);
@@ -348,7 +348,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
             break;
             case "Neptune":
             {
-                let geometry = new THREE.SphereGeometry(150,32,50);
+                let geometry = new THREE.SphereGeometry((Math.random()*(600-150)+150),32,50);
                 let material = new THREE.MeshLambertMaterial({color: 0xDCDCDC});
                 window["moon"+i] = new THREE.Mesh(geometry,material);
                 console.log("Creating moon: "+i+" for "+name);
