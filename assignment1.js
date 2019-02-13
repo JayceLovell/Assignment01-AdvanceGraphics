@@ -14,6 +14,7 @@ const axesHelper = new THREE.AxesHelper(10);
 
 //global variables
 var controls,
+    trackballControls,
     buldLight,
     hemiLight,
     sun,
@@ -75,7 +76,7 @@ function init() {
         this.SaturnMoonSpeed=0.01;
         this.UranusMoonSpeed=0.01;
         this.NeptuneMoonSpeed=0.01;
-        this.TurnOnAmbientLight=true;
+        this.TurnOnAmbientLight=false;
     }
     gui = new dat.GUI();
     let planets = gui.addFolder('Planets');
@@ -133,12 +134,13 @@ function init() {
     gui.add(control,"TurnOnAmbientLight").onChange((value)=>{
             light.visible=value;
     });
-    controls = new THREE.OrbitControls(camera,renderer.domElement);
+    //controls = new THREE.OrbitControls(camera,renderer.domElement);
+    trackballControls = new THREE.TrackballControls(camera, renderer.domElement);
 }
 function setupCamera() {
-    camera.position.x = 15;
+    camera.position.x = 0;
     camera.position.y = 1000000;
-    camera.position.z = 90;
+    camera.position.z = 2000;
     camera.lookAt(scene.position);
     /*var topSpotLight = new THREE.SpotLight( 0xffffff );
     var bottomSpotLight = new THREE.SpotLight( 0xffffff );
@@ -154,7 +156,7 @@ function setupCamera() {
 }
 function createSun() {
     sun = new THREE.PointLight(0xFFFFFF, 2, 0,2);
-    let sunGeometry = new THREE.SphereBufferGeometry(10000, 32, 50);
+    let sunGeometry = new THREE.SphereBufferGeometry(30000, 32, 50);
     let sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFDA50F });
     sun.add(new THREE.Mesh( sunGeometry, sunMaterial));
     scene.add(sun);
@@ -375,7 +377,7 @@ function createMoons(name,planet,numberOfMoons,planetOrbit){
     }
 }
 function createRing(distance){
-    var geometry = new THREE.RingGeometry(distance,(distance+50), 100);
+    var geometry = new THREE.RingGeometry(distance,(distance+100), 100);
     var material = new THREE.MeshBasicMaterial( { color: 0xA9A9A9, side: THREE.DoubleSide } );
     var mesh = new THREE.Mesh( geometry, material );
     scene.add(mesh);
@@ -410,15 +412,16 @@ function rotateMoons(){
 }
 function render() {
     //update the controlls
-    //trackballControls.update(clock.getDelta());
-    controls.update(clock.getDelta());
+    trackballControls.update(clock.getDelta());
+    //controls.update(clock.getDelta());
     renderer.render(scene, camera);
 
-    var time = Date.now() * 0.0005;
+    /*var time = Date.now() * 0.0005;
 
     sun.position.x = Math.cos( time * 10 ) * 5;
 	sun.position.y = Math.cos( time * 7 ) * 3;
-    sun.position.y = Math.cos( time * 7 ) * 3;
+    sun.position.z = Math.cos( time * 7 ) * 3;*/
+
     mercuryOrbit.rotation.z += mercurySpeed;
     venusOrbit.rotation.z += venusSpeed;
     earthOrbit.rotation.z += earthSpeed;
